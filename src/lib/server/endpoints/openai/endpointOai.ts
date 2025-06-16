@@ -149,7 +149,15 @@ export async function endpointOai(
 				"Tools are not supported for 'completions' mode, switch to 'chat_completions' instead"
 			);
 		}
-		return async ({ messages, preprompt, continueMessage, generateSettings, conversationId }) => {
+		return async ({
+			messages,
+			preprompt,
+			continueMessage,
+			generateSettings,
+			conversationId,
+			userId,
+			userEmail,
+		}) => {
 			const prompt = await buildPrompt({
 				messages,
 				continueMessage,
@@ -173,6 +181,8 @@ export async function endpointOai(
 				body: { ...body, ...extraBody },
 				headers: {
 					"ChatUI-Conversation-ID": conversationId?.toString() ?? "",
+					"ChatUI-User-Id": userId?.toString() ?? "",
+					"ChatUI-User-Email": userEmail,
 				},
 			});
 
@@ -186,6 +196,8 @@ export async function endpointOai(
 			tools,
 			toolResults,
 			conversationId,
+			userId,
+			userEmail,
 		}) => {
 			let messagesOpenAI: OpenAI.Chat.Completions.ChatCompletionMessageParam[] =
 				await prepareMessages(messages, imageProcessor, !model.tools && model.multimodal);
@@ -252,6 +264,8 @@ export async function endpointOai(
 				body: { ...body, ...extraBody },
 				headers: {
 					"ChatUI-Conversation-ID": conversationId?.toString() ?? "",
+					"ChatUI-User-Id": userId?.toString() ?? "",
+					"ChatUI-User-Email": userEmail,
 				},
 			});
 
